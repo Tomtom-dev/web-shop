@@ -1,4 +1,5 @@
 const fs= require('fs')
+const crypto = require('crypto')
 
 class UsersRepository {
     constructor(filename){
@@ -21,6 +22,8 @@ class UsersRepository {
     }
 
     async create(attribute){
+
+        attribute.id= this.randomId()
         const records = await this.getAll();
         records.push(attribute);
         // write the updates 'records' array back to this.filename
@@ -30,14 +33,41 @@ class UsersRepository {
     async writeAll (records){
         await fs.promises.writeFile(this.filename, JSON.stringify(records,null, 2))
     }
+
+    randomId(){
+        return crypto.randomBytes(4).toString('hex');
+    }
+
+    async getOne(id){
+        const records = await this.getAll();
+        return records.find(record => record.id === id);
+    }
+
+    async delete(id){
+        const records = await this.getAll();
+        const filteredRecords = records.filter( record => record.id !== id);
+        await this.writeAll(filteredRecords)
+    }
+
+    async update (id, attribute){
+        const records = await this.getAll();
+        const record = records.find(record => record.id === id);
+
+        if (!record){
+            throw new Error(` Record with id : ${id} is not found`)
+        }
+
+        Object.assign(record,attribute)
+        await this.writeAll(records)
+    }
 }
+
+
 
 const test = async () =>{
     const repo = new UsersRepository('users.json');
-    
-    await repo.create({email: "tes@this.com", password: '1234', })
-    const users = await repo.getAll()
-    console.log(users);
+
+    await repo.update('b7e80d4c',{password:'secret'})
 }
 
 test()
