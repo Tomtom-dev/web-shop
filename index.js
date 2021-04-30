@@ -18,6 +18,16 @@ app.get('/', (req,res) =>{
     `)
 })
 
+
+app.post('/', (req,res) => {
+    console.log(req.body);
+    res.send('account created !!')
+})
+
+app.listen(port, () =>{
+    console.log(`Listening on port ...${port}`);
+})
+
 // Middleware function
 // const bodyParser = (req, res, next) => {
 //     // get access to email, password, password confirmation
@@ -36,12 +46,3 @@ app.get('/', (req,res) =>{
 //         next();
 //     }
 // }
-
-app.post('/', (req,res) => {
-    console.log(req.body);
-    res.send('account created !!')
-})
-
-app.listen(port, () =>{
-    console.log(`Listening on port ...${port}`);
-})
