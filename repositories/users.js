@@ -28,6 +28,9 @@ class UsersRepository {
         records.push(attribute);
         // write the updates 'records' array back to this.filename
         await this.writeAll(records)
+        
+
+        return attribute;
     }
 
     async writeAll (records){
